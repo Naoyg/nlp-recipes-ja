@@ -6,7 +6,6 @@ data/fasttext
 *.pkl
 *.log
 *.model
-*.json
 *.bin
 *.npy
 wandb
