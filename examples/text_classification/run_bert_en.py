@@ -28,7 +28,7 @@ try:
 except Exception as e:
     raise e
 
-os.environ["DISABLE_MLFLOW_INTEGRATION"] = True
+os.environ["DISABLE_MLFLOW_INTEGRATION"] = "TRUE"
 
 
 def preprocess_text_classification(
