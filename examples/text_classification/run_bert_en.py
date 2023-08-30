@@ -1,3 +1,4 @@
+import os
 import random
 import sys
 import tempfile
@@ -26,6 +27,8 @@ try:
     from utils.mlflow_utils import log_all_params
 except Exception as e:
     raise e
+
+os.environ["DISABLE_MLFLOW_INTEGRATION"] = True
 
 
 def preprocess_text_classification(
@@ -117,20 +120,21 @@ def main(cfg: DictConfig):
     mlflow_metrics = train_metrics | eval_metrics | test_metrics
 
     # save results
-    mlflow.set_tags(mlflow_tags)
-    mlflow.log_params(mlflow_params)
-    log_all_params(cfg)
-    mlflow.log_metrics(mlflow_metrics)
-    mlflow.log_artifacts(mlflow_tmp_folder)
-    components = {
-        "model": model,
-        "tokenizer": tokenizer,
-    }
-    mlflow.transformers.log_model(
-        transformers_model=components,
-        artifact_path="model_transformers",
-    )
-    tmp_folder.cleanup()
+    with mlflow.start_run():
+        mlflow.set_tags(mlflow_tags)
+        mlflow.log_params(mlflow_params)
+        log_all_params(cfg)
+        mlflow.log_metrics(mlflow_metrics)
+        mlflow.log_artifacts(mlflow_tmp_folder)
+        components = {
+            "model": model,
+            "tokenizer": tokenizer,
+        }
+        mlflow.transformers.log_model(
+            transformers_model=components,
+            artifact_path="model_transformers",
+        )
+        tmp_folder.cleanup()
 
 
 if __name__ == "__main__":
