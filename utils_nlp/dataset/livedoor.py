@@ -16,8 +16,8 @@ def load_pandas_df(nrows: int = None, shuffle: bool = False) -> pd.DataFrame:
     Returns:
         pd.DataFrame: livedoor dataset
     """
-    if os.path.exists('./data/livedoor.csv'):
-        df = pd.read_csv('./data/livedoor.csv')
+    if os.path.exists("./data/livedoor.csv"):
+        df = pd.read_csv("./data/livedoor.csv")
     else:
         df = download_livedoor()
 
@@ -36,9 +36,9 @@ def download_livedoor() -> pd.DataFrame:
     Returns:
         pd.DataFrame: livedoor dataset
     """
-    FILEURL = 'https://www.rondhuit.com/download/ldcc-20140209.tar.gz'
-    FILEPATH = './data/ldcc-20140209.tar.gz'
-    EXTRACTDIR = './data/livedoor/'
+    FILEURL = "https://www.rondhuit.com/download/ldcc-20140209.tar.gz"
+    FILEPATH = "./data/ldcc-20140209.tar.gz"
+    EXTRACTDIR = "./data/livedoor/"
     urlretrieve(FILEURL, FILEPATH)
 
     mode = "r:gz"
@@ -47,16 +47,19 @@ def download_livedoor() -> pd.DataFrame:
     tar.close()
 
     categories = [
-        name for name
-        in os.listdir(os.path.join(EXTRACTDIR, "text"))
-        if os.path.isdir(os.path.join(EXTRACTDIR, "text", name))]
+        name
+        for name in os.listdir(os.path.join(EXTRACTDIR, "text"))
+        if os.path.isdir(os.path.join(EXTRACTDIR, "text", name))
+    ]
 
     categories = sorted(categories)
-    table = str.maketrans({
-        '\n': '',
-        '\t': '　',
-        '\r': '',
-    })
+    table = str.maketrans(
+        {
+            "\n": "",
+            "\t": "　",
+            "\r": "",
+        }
+    )
 
     all_text = []
     all_label = []
@@ -70,8 +73,8 @@ def download_livedoor() -> pd.DataFrame:
         all_text.extend(body)
         all_label.extend(label)
 
-    df = pd.DataFrame({'text': all_text, 'label': all_label})
-    df.to_csv('./data/livedoor.csv', index=False)
+    df = pd.DataFrame({"text": all_text, "label": all_label})
+    df.to_csv("./data/livedoor.csv", index=False)
     return df
 
 
@@ -80,5 +83,5 @@ def extract_txt(filename: str) -> str:
         # 0: URL, 1: timestamp
         text = text_file.readlines()[2:]
         text = [sentence.strip() for sentence in text]
-        text = list(filter(lambda line: line != '', text))
-        return ''.join(text)
+        text = list(filter(lambda line: line != "", text))
+        return "".join(text)
