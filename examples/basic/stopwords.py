@@ -20,17 +20,18 @@ def get_stop_words_by_freq(docs, n=100):
 
 
 def get_stop_words_by_dict():
-    stopwords = pd.read_table('http://svn.sourceforge.jp/svnroot/slothlib/CSharp/Version1/SlothLib/NLP/Filter/StopWord/word/Japanese.txt', header=None)
+    stopwords = pd.read_table(
+        "http://svn.sourceforge.jp/svnroot/slothlib/CSharp/Version1/SlothLib/NLP/Filter/StopWord/word/Japanese.txt",
+        header=None,
+    )
     stopwords = list(stopwords[0].values)
     return stopwords
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     df = load_pandas_df(nrows=100)
-    tokenizer = WordTokenizer('MeCab')
-    docs = np.array([
-        map(str, tokenizer.tokenize(text)) for text in df['text']
-    ])
+    tokenizer = WordTokenizer("MeCab")
+    docs = np.array([map(str, tokenizer.tokenize(text)) for text in df["text"]])
     stopwords_f = get_stop_words_by_freq(docs, n=100)
     stopwords_d = get_stop_words_by_dict()
     stopwords = set(stopwords_f) | set(stopwords_d)
