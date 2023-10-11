@@ -1,9 +1,12 @@
 import glob
 import os
 import tarfile
+from pathlib import Path
 from urllib.request import urlretrieve
 
 import pandas as pd
+
+HOME_PATH = Path(__file__).resolve().parents[2]
 
 
 def load_pandas_df(nrows: int = None, shuffle: bool = False) -> pd.DataFrame:
@@ -16,8 +19,9 @@ def load_pandas_df(nrows: int = None, shuffle: bool = False) -> pd.DataFrame:
     Returns:
         pd.DataFrame: livedoor dataset
     """
-    if os.path.exists("./data/livedoor.csv"):
-        df = pd.read_csv("./data/livedoor.csv")
+    csv_file = HOME_PATH / "data/livedoor.csv"
+    if csv_file.is_file():
+        df = pd.read_csv(csv_file)
     else:
         df = download_livedoor()
 
@@ -37,8 +41,8 @@ def download_livedoor() -> pd.DataFrame:
         pd.DataFrame: livedoor dataset
     """
     FILEURL = "https://www.rondhuit.com/download/ldcc-20140209.tar.gz"
-    FILEPATH = "./data/ldcc-20140209.tar.gz"
-    EXTRACTDIR = "./data/livedoor/"
+    FILEPATH = str(HOME_PATH / "data/ldcc-20140209.tar.gz")
+    EXTRACTDIR = str(HOME_PATH / "data/livedoor")
     urlretrieve(FILEURL, FILEPATH)
 
     mode = "r:gz"
@@ -74,7 +78,7 @@ def download_livedoor() -> pd.DataFrame:
         all_label.extend(label)
 
     df = pd.DataFrame({"text": all_text, "label": all_label})
-    df.to_csv("./data/livedoor.csv", index=False)
+    df.to_csv(HOME_PATH / "data/livedoor.csv", index=False)
     return df
 
 
