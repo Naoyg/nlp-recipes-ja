@@ -1,10 +1,19 @@
-from collections import Counter
 import itertools
-from konoha import WordTokenizer
+import sys
+from collections import Counter
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
+from konoha import WordTokenizer
 
-from utils_nlp.dataset.livedoor import load_pandas_df
+HOME_PATH = Path(__file__).resolve().parents[2]
+
+try:
+    sys.path.append(str(HOME_PATH))
+    from utils_nlp.dataset.livedoor import load_pandas_df
+except Exception as e:
+    raise e
 
 
 def remove_stopwords(words, stopwords):
